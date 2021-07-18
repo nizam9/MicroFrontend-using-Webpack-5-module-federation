@@ -2,12 +2,13 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const mf = require("@angular-architects/module-federation/webpack");
 const path = require("path");
 const share = mf.share;
+const CopyPlugin = require('copy-webpack-plugin');
 
 const sharedMappings = new mf.SharedMappings();
 sharedMappings.register(
   path.join(__dirname, '../../tsconfig.json'),
   [/* mapped paths to share */]);
-
+console.log('__dirname' , __dirname);
 module.exports = {
   output: {
     uniqueName: "host",
@@ -45,6 +46,15 @@ module.exports = {
           ...sharedMappings.getDescriptors()
         })
         
+    }),
+    // new CopyPlugin([
+    //   {from:'mfe1/src/assets' , to:'assets'}
+    // ]),
+    new CopyPlugin({
+      patterns: [
+        { from:'projects/mfe1/src/assets' , to:'assets' },
+        // { from: "other", to: "public" },
+      ],
     }),
     sharedMappings.getPlugin()
   ],
